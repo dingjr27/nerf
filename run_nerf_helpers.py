@@ -32,7 +32,8 @@ class Embedder:
         d = self.kwargs['input_dims']
         out_dim = 0
         if self.kwargs['include_input']:
-            embed_fns.append(lambda x: x)
+            embed_fns.append(lambda x: x) # input xyz is include in the input, so input dim is 63
+            # x , sin(pi*x) , cos(pi*x)
             out_dim += d
 
         max_freq = self.kwargs['max_freq_log2']
@@ -57,7 +58,7 @@ class Embedder:
 
 
 def get_embedder(multires, i=0):
-
+    # multires is the L of position encoding
     if i == -1:
         return tf.identity, 3
 
@@ -80,7 +81,8 @@ def get_embedder(multires, i=0):
 def init_nerf_model(D=8, W=256, input_ch=3, input_ch_views=3, output_ch=4, skips=[4], use_viewdirs=False):
 
     relu = tf.keras.layers.ReLU()
-    def dense(W, act=relu): return tf.keras.layers.Dense(W, activation=act)
+    def dense(W, act=relu):
+        return tf.keras.layers.Dense(W, activation=act)
 
     print('MODEL', input_ch, input_ch_views, type(
         input_ch), type(input_ch_views), use_viewdirs)
@@ -97,7 +99,7 @@ def init_nerf_model(D=8, W=256, input_ch=3, input_ch_views=3, output_ch=4, skips
     for i in range(D):
         outputs = dense(W)(outputs)
         if i in skips:
-            outputs = tf.concat([inputs_pts, outputs], -1)
+            outputs = tf.concat([inputs_pts, outputs], -1) # 5th layer concatenates input
 
     if use_viewdirs:
         alpha_out = dense(1, act=None)(outputs)
