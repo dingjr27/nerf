@@ -45,7 +45,7 @@ def run_network(inputs, viewdirs, fn, embed_fn, embeddirs_fn, netchunk=1024*64):
 
 
     extractor = keras.Model(inputs=fn.inputs,
-                            outputs=fn.layers[2].output)
+                            outputs=fn.layers[15].output)
     temp = tf.reshape(embedded[0],[1,90])
     print(inputs_flat[0])
     print(input_dirs_flat[0])
