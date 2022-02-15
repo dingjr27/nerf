@@ -12,18 +12,21 @@ from run_nerf_helpers import *
 from load_llff import load_llff_data
 from load_deepvoxels import load_dv_data
 from load_blender import load_blender_data
-
+from tensorflow import keras
+from tensorflow.keras import layers
 
 tf.compat.v1.enable_eager_execution()
 
 
 def batchify(fn, chunk):
     """Constructs a version of 'fn' that applies to smaller batches."""
+
     if chunk is None:
         return fn
 
     def ret(inputs):
         return tf.concat([fn(inputs[i:i+chunk]) for i in range(0, inputs.shape[0], chunk)], 0)
+
     return ret
 
 
@@ -38,6 +41,17 @@ def run_network(inputs, viewdirs, fn, embed_fn, embeddirs_fn, netchunk=1024*64):
         input_dirs_flat = tf.reshape(input_dirs, [-1, input_dirs.shape[-1]])
         embedded_dirs = embeddirs_fn(input_dirs_flat)
         embedded = tf.concat([embedded, embedded_dirs], -1)
+
+
+
+    extractor = keras.Model(inputs=fn.inputs,
+                            outputs=fn.layers[2].output)
+    temp = tf.reshape(embedded[0],[1,90])
+    print(inputs_flat[0])
+    print(input_dirs_flat[0])
+    print(extractor.predict(temp))
+    #print( fn.layers[2].weights[0] )
+    exit(0)
 
     outputs_flat = batchify(fn, netchunk)(embedded)
     outputs = tf.reshape(outputs_flat, list(

@@ -10,6 +10,8 @@ import json
 import random
 import time
 import pprint
+from tensorflow import keras
+from tensorflow.keras import layers
 
 import matplotlib.pyplot as plt
 
@@ -52,6 +54,21 @@ else:
 # Create nerf model
 _, render_kwargs_test, start, grad_vars, models = run_nerf.create_nerf(args)
 
+print(models['model'].input)
+model = models['model']
+print(model.summary())
+#extractor = keras.Model(inputs=model.inputs,
+ #                       outputs=model.layers[1].output)
+#embed_fn, input_ch = run_nerf.get_embedder(10,1)
+#embed_fn1, input_ch = run_nerf.get_embedder(4,1)
+#a = embed_fn(tf.constant([[0.5,0.5,0.5]]))
+#b = embed_fn1(tf.constant([[0.5,0.5,0.5]]))
+#c = tf.concat([a,b],1)
+#print(c.shape)
+#print(extractor.predict(c))
+#exit(0)
+#features = extractor()
+
 bds_dict = {
     'near' : tf.cast(near, tf.float32),
     'far' : tf.cast(far, tf.float32),
@@ -68,6 +85,8 @@ render_kwargs_fast['N_importance'] = 0
 
 c2w = np.eye(4)[:3,:4].astype(np.float32) # identity pose matrix
 test = run_nerf.render(H//down, W//down, focal/down, c2w=c2w, **render_kwargs_fast)
+
 img = np.clip(test[0],0,1)
 plt.imshow(img)
 plt.show()
+
