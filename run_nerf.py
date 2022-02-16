@@ -51,6 +51,9 @@ def run_network(inputs, viewdirs, fn, embed_fn, embeddirs_fn, netchunk=1024*64):
     #print( fn.layers[2].weights[0] )
     #exit(0)
 
+    from inf import predict
+    print(predict(embedded[0:1].numpy(),2))
+
     # TODO: change batchify with self defined c++ network
 
     outputs_flat = batchify(fn, netchunk)(embedded)

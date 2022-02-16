@@ -4,6 +4,8 @@ os.environ['CUDA_VISIBLE_DEVICES'] = '1'
 import tensorflow as tf
 tf.compat.v1.enable_eager_execution()
 
+sys.path.append(r'/home/luca/Desktop/NERFPosit/Inference')
+
 import numpy as np
 import imageio
 import json
