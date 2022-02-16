@@ -42,16 +42,16 @@ def run_network(inputs, viewdirs, fn, embed_fn, embeddirs_fn, netchunk=1024*64):
         embedded_dirs = embeddirs_fn(input_dirs_flat)
         embedded = tf.concat([embedded, embedded_dirs], -1)
 
-
-
-    extractor = keras.Model(inputs=fn.inputs,
-                            outputs=fn.layers[15].output)
-    temp = tf.reshape(embedded[0],[1,90])
-    print(inputs_flat[0])
-    print(input_dirs_flat[0])
-    print(extractor.predict(temp))
+    #extractor = keras.Model(inputs=fn.inputs,
+     #                       outputs=fn.layers[15].output)
+    #temp = tf.reshape(embedded[0],[1,90])
+    #print(inputs_flat[0])
+    #print(input_dirs_flat[0])
+    #print(extractor.predict(temp))
     #print( fn.layers[2].weights[0] )
-    exit(0)
+    #exit(0)
+
+    # TODO: change batchify with self defined c++ network
 
     outputs_flat = batchify(fn, netchunk)(embedded)
     outputs = tf.reshape(outputs_flat, list(
@@ -217,7 +217,7 @@ def render_rays(ray_batch,
         z_vals[..., :, None]  # [N_rays, N_samples, 3]
 
     # Evaluate model at each point.
-    raw = network_query_fn(pts, viewdirs, network_fn)  # [N_rays, N_samples, 4]
+    raw = network_query_fn(pts, viewdirs, network_fn)  # [N_rays, N_samples, 4] # TODO: modify it to support c++ backend
     rgb_map, disp_map, acc_map, weights, depth_map = raw2outputs(
         raw, z_vals, rays_d)
 
